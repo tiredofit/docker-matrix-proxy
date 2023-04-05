@@ -1,0 +1,50 @@
+#!/command/with-contenv bash
+
+source /assets/functions/00-container
+prepare_service
+PROCESS_NAME="matrix-proxy"
+
+if [ ! -f "/tmp/.container/container-restart" ] ; then
+    sanity_var HOMESERVER_URL "URL to your Matrix Homeserver"
+    update_template /etc/nginx/sites.available/matrix-proxy.conf    \
+                                                                        HOMESERVER_URL
+
+    case "${HOMESERVER_TYPE,,}" in
+        synapse )
+            update_template /etc/nginx/includes.d/homeserver-synapse.conf \
+                                                                            HOMESERVER_URL
+
+            sed -i "s|{{HOMESERVER_TYPE}}|synapse|g" /etc/nginx/sites.available/matrix-proxy.conf
+
+            if var_true "${ENABLE_SYNAPSE_ADMIN}" ; then
+                print_notice "Enabling Proxy to Synapse Admin"
+                sed -i "s|#include /etc/nginx/includes.d/synapse-admin.conf;|include /etc/nginx/includes.d/synapse-admin.conf;|g" /etc/nginx/sites.available/matrix-proxy.conf
+                sed "/deny all;/i\            allow 127.0.0.1;" /etc/nginx/includes.d/synapse-admin.conf
+                    allowed_synapse_admin=$(echo "SYNAPSE_ADMIN_ALLOWED_IPS" | tr "," "\n")
+                    for allowed_host in $allowed_synapse_admin; do
+                        print_notice "[synapse_admin] Allowing ${allowed_host}"
+                        sed -i "/allow 127.0.0.1/a\\            allow $allowed_host;" /etc/nginx/includes.d/synapse-admin.conf
+                done
+
+                update_template /etc/nginx/includes.d/synapse-admin.conf \
+                                                                            HOMESERVER_URL
+            fi
+        ;;
+    esac
+
+    if var_true "${ENABLE_PROXY_MEDIA_REPO}" ; then
+        print_notice "Enabling Proxy to media repository"
+        sed -i "s|#include /etc/nginx/includes.d/media-repo.conf;|include /etc/nginx/includes.d/media-repo.conf;|g" /etc/nginx/sites.available/matrix-proxy.conf
+        sanity_var MEDIA_REPO_URL "URL to your Media Repository"
+        update_template /etc/nginx/includes.d/media-repo.conf \
+                                                                MEDIA_REPO_URL
+        if var_true "${MEDIA_REPO_PROXY_LOGOUT}" ; then
+            print_notice "[media_repo] Intercepting Client Logout Requests and forwarding to media repo"
+            sed -i "s|#include /etc/nginx/includes.d/media-repo_proxy-logout.conf;|include /etc/nginx/includes.d/media-repo_proxy-logout.conf;|g" /etc/nginx/includes.d/media-repo.conf
+            update_template /etc/nginx/includes.d/media-repo_proxy-logout.conf \
+                                                                                MEDIA_REPO_URL
+        fi
+    fi
+fi
+
+liftoff

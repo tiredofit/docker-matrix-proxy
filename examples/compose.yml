@@ -1,0 +1,33 @@
+services:
+  matrix-proxy-app:
+    image: tiredofit/matrix-proxy:latest
+    container_name: matrix-proxy-app
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.matrix-proxy.rule=Host(`matrix-proxy.example.com`)
+      - traefik.http.services.matrix-proxy.loadbalancer.server.port=80
+    volumes:
+      - ./logs:/logs
+    environment:
+      - TIMEZONE=America/Vancouver
+      - CONTAINER_NAME=matrix-proxy-app
+
+      - HOMESERVER_TYPE=synapse
+      - HOMESERVER_URL=http://synapse:8008
+
+      - ENABLE_SYNAPSE_ADMIN=FALSE
+      - SYNAPSE_ADMIN_ALLOWED_IPS=127.0.0.1,192.168.0.0/16
+
+      - ENABLE_PROXY_MEDIA_REPO=TRUE
+      - MEDIA_REPO_URL=http://media-repo:8000
+
+    networks:
+      - proxy
+      - services
+    restart: always
+
+networks:
+  proxy:
+    external: true
+  services:
+    external: true
