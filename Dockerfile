@@ -12,7 +12,6 @@ ENV NGINX_SITE_ENABLED=matrix-proxy \
 
 RUN source assets/functions/00-container && \
     set -x && \
-    \
     package update && \
     package upgrade && \
     package cleanup

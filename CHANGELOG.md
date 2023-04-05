@@ -1,3 +1,9 @@
+## 1.0.1 2023-04-05 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix an issue blocking OIDC logins to homeserver
+
+
 ## 1.0.0 2023-04-05 <dave at tiredofit dot ca>
 
    ### Added
