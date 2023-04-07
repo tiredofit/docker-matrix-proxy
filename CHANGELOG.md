@@ -1,3 +1,9 @@
+## 1.1.0 2023-04-07 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add serving .well-known/matrix/server and client files
+
+
 ## 1.0.1 2023-04-05 <dave at tiredofit dot ca>
 
    ### Changed

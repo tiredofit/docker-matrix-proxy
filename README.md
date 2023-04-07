@@ -31,6 +31,7 @@ This will build a Docker Image for to proxy connections to a Matrix Homeserver, 
     - [Base Images used](#base-images-used)
     - [Homeserver Options](#homeserver-options)
     - [Media Proxy Options](#media-proxy-options)
+    - [Well Known Options](#well-known-options)
 - [Maintenance](#maintenance)
   - [Shell Access](#shell-access)
 - [Support](#support)
@@ -99,19 +100,26 @@ Be sure to view the following repositories to understand all the customizable op
 | [Nginx](https://github.com/tiredofit/docker-nginx/)    | Nginx webserver                        |
 
 #### Homeserver Options
-| Variable                    | Value                                                                       | Default     |
-| --------------------------- | --------------------------------------------------------------------------- | ----------- |
-| `HOMESERVER_TYPE`           | `synapse` only supported at this time                                       | `synapse`   |
-| `HOMESERVER_URL`            | URL to Matrix Homeserver eg `http://synapse:8008`                           |             |
-| `ENABLE_SYNAPSE_ADMIN`      | Create proxy to Synapse Administration API                                  | `FALSE`     |
-| `SYNAPSE_ADMIN_ALLOWED_IPS` | IP/Networks allowed to access Synapse Admin API seperated by commas         | `0.0.0.0/0` |
+| Variable                    | Value                                                               | Default     |
+| --------------------------- | ------------------------------------------------------------------- | ----------- |
+| `HOMESERVER_TYPE`           | `synapse` only supported at this time                               | `synapse`   |
+| `HOMESERVER_URL`            | URL to Matrix Homeserver eg `http://synapse:8008`                   |             |
+| `ENABLE_SYNAPSE_ADMIN`      | Create proxy to Synapse Administration API                          | `FALSE`     |
+| `SYNAPSE_ADMIN_ALLOWED_IPS` | IP/Networks allowed to access Synapse Admin API seperated by commas | `0.0.0.0/0` |
 
 #### Media Proxy Options
-| Variable                    | Value                                                                       | Default     |
-| --------------------------- | --------------------------------------------------------------------------- | ----------- |
-| `ENABLE_PROXY_MEDIA_REPO`   | Create proxy to third party media repository                                | `FALSE`     |
-| `MEDIA_REPO_URL`            | URL to Media Repository eg `http://media-repo:8000`                         |             |
-| `MEDIA_REPO_PROXY_LOGOUT`   | Send Client logout requests to `MEDIA_REPO_URL` instead of `HOMESERVER_URL` | `TRUE`      |
+| Variable                  | Value                                                                       | Default |
+| ------------------------- | --------------------------------------------------------------------------- | ------- |
+| `ENABLE_PROXY_MEDIA_REPO` | Create proxy to third party media repository                                | `FALSE` |
+| `MEDIA_REPO_URL`          | URL to Media Repository eg `http://media-repo:8000`                         |         |
+| `MEDIA_REPO_PROXY_LOGOUT` | Send Client logout requests to `MEDIA_REPO_URL` instead of `HOMESERVER_URL` | `TRUE`  |
+
+#### Well Known Options
+| Variable            | Value                                                     | Default |
+| ------------------- | --------------------------------------------------------- | ------- |
+| `ENABLE_WELL_KNOWN` | Enable serving .well-known/matrix/server and client files | `FALSE` |
+| `WELL_KNOWN_CLIENT` | Homeserver base url eg `https://matrix.example.com`       |         |
+| `WELL_KNOWN_SERVER` | Homeserver server info eg `matrix.example.com:443`        |         |
 
 ## Maintenance
 ### Shell Access

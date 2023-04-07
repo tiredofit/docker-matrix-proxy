@@ -45,6 +45,15 @@ if [ ! -f "/tmp/.container/container-restart" ] ; then
                                                                                 MEDIA_REPO_URL
         fi
     fi
+
+    if var_true "${ENABLE_WELL_KNOWN}" ; then
+        print_notice "Enabling .well-known serving"
+        sed -i "s|#include /etc/nginx/includes.d/well-known.conf;|include /etc/nginx/includes.d/well-known.conf;|g" /etc/nginx/sites.available/matrix-proxy.conf
+        sanity_var WELL_KNOWN_CLIENT "Client information"
+        sanity_var WELL_KNOWN_SERVER "Homeserver information"
+        update_template /etc/nginx/includes.d/well-known.conf \
+                                                                WELL_KNOWN_CLIENT \
+                                                                WELL_KNOWN_SERVER
 fi
 
 liftoff
