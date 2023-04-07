@@ -55,5 +55,6 @@ if [ ! -f "/tmp/.container/container-restart" ] ; then
                                                                 WELL_KNOWN_CLIENT \
                                                                 WELL_KNOWN_SERVER
     fi
+fi
 
 liftoff
